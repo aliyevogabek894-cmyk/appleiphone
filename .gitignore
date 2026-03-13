@@ -1,0 +1,11 @@
+# Temporary extraction files
+shop/apple_shop_raw.html
+shop/apple_source.html
+store/apple_store_raw.html
+store/apple_source.html
+
+# Logs and environment
+.gemini/
+*.log
+node_modules/
+.DS_Store

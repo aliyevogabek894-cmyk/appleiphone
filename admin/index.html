@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Store - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <svg height="32" viewBox="0 0 14 44" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m13.0729 17.6825a3.61 3.61 0 0 0 -1.7248 3.0365 3.5132 3.5132 0 0 0 2.1379 3.2223 8.394 8.394 0 0 1 -1.0948 2.2618c-.6816.9812-1.3943 1.9623-2.4787 1.9623s-1.3633-.63-2.613-.63c-1.2187 0-1.6525.6507-2.644.6507s-1.6834-.9089-2.4787-2.0243a9.7842 9.7842 0 0 1 -1.6628-5.2776c0-3.0984 2.014-4.7405 3.9969-4.7405 1.0535 0 1.9314.6919 2.5924.6919.63 0 1.6112-.7333 2.8092-.7333a3.7579 3.7579 0 0 1 3.1604 1.5802zm-3.7284-2.8918a3.5615 3.5615 0 0 0 .8469-2.22 1.5353 1.5353 0 0 0 -.031-.32 3.5686 3.5686 0 0 0 -2.3445 1.2084 3.4629 3.4629 0 0 0 -.8779 2.1585 1.419 1.419 0 0 0 .031.2892 1.19 1.19 0 0 0 .2169.0207 3.0935 3.0935 0 0 0 2.1586-1.1368z" fill="#1d1d1f"/></svg>
+            <h2>Admin<span class="light-text">OS</span></h2>
+        </div>
+        <ul class="nav-links">
+            <li class="active"><a href="#"><span class="icon">􀎟</span> Dashboard</a></li>
+            <li><a href="#"><span class="icon">􀤆</span> Products</a></li>
+            <li><a href="#"><span class="icon">􀈑</span> Orders</a></li>
+            <li><a href="#"><span class="icon">􀉩</span> Customers</a></li>
+            <li><a href="#"><span class="icon">􀍡</span> Analytics</a></li>
+            <li><a href="#"><span class="icon">􀣋</span> Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=000&color=fff&rounded=true" alt="Admin">
+                <div class="admin-info">
+                    <p class="admin-name">Admin User</p>
+                    <p class="admin-role">Super Admin</p>
+                </div>
+            </div>
+            <a href="#" class="logout-btn">Log Out 􀆨</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="search-bar">
+                <span class="icon">􀊫</span>
+                <input type="text" placeholder="Search orders, products, or users...">
+            </div>
+            <div class="topbar-actions">
+                <button class="action-btn">􀝖</button>
+                <button class="action-btn">􀍡</button>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-wrapper">
+            <div class="welcome-section">
+                <h1>Overview</h1>
+                <p>Here's what's happening with your Apple Store today.</p>
+            </div>
+
+            <!-- Bento Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3>Total Revenue</h3>
+                        <span class="badge positive">+14.2%</span>
+                    </div>
+                    <h2>$124,500.00</h2>
+                    <p class="stat-desc">Compared to last month</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3>Active Orders</h3>
+                        <span class="badge positive">+5.4%</span>
+                    </div>
+                    <h2>1,245</h2>
+                    <p class="stat-desc">In processing & transit</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3>New Customers</h3>
+                        <span class="badge negative">-1.2%</span>
+                    </div>
+                    <h2>342</h2>
+                    <p class="stat-desc">Registered this week</p>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Area Split -->
+            <div class="dashboard-split">
+                
+                <!-- Recent Orders Table -->
+                <div class="bento-panel large-panel">
+                    <div class="panel-header">
+                        <h3>Recent Transactions</h3>
+                        <button class="btn-text">View All</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#APL-8901</td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <img src="https://ui-avatars.com/api/?name=John+D&background=f5f5f7&color=1d1d1f&rounded=true" alt="John">
+                                            <span>John Doe</span>
+                                        </div>
+                                    </td>
+                                    <td>iPhone 16 Pro Max</td>
+                                    <td>Oct 24, 2026</td>
+                                    <td><span class="status-pill completed">Completed</span></td>
+                                    <td>$1,199.00</td>
+                                </tr>
+                                <tr>
+                                    <td>#APL-8902</td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <img src="https://ui-avatars.com/api/?name=Sarah+S&background=f5f5f7&color=1d1d1f&rounded=true" alt="Sarah">
+                                            <span>Sarah Smith</span>
+                                        </div>
+                                    </td>
+                                    <td>MacBook Pro M4</td>
+                                    <td>Oct 24, 2026</td>
+                                    <td><span class="status-pill processing">Processing</span></td>
+                                    <td>$2,499.00</td>
+                                </tr>
+                                <tr>
+                                    <td>#APL-8903</td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <img src="https://ui-avatars.com/api/?name=Michael+B&background=f5f5f7&color=1d1d1f&rounded=true" alt="Michael">
+                                            <span>Michael B.</span>
+                                        </div>
+                                    </td>
+                                    <td>AirPods Pro (2nd Gen)</td>
+                                    <td>Oct 23, 2026</td>
+                                    <td><span class="status-pill shipped">Shipped</span></td>
+                                    <td>$249.00</td>
+                                </tr>
+                                <tr>
+                                    <td>#APL-8904</td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <img src="https://ui-avatars.com/api/?name=Emma+W&background=f5f5f7&color=1d1d1f&rounded=true" alt="Emma">
+                                            <span>Emma Watson</span>
+                                        </div>
+                                    </td>
+                                    <td>Apple Watch Series 10</td>
+                                    <td>Oct 23, 2026</td>
+                                    <td><span class="status-pill completed">Completed</span></td>
+                                    <td>$399.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Top Products list -->
+                <div class="bento-panel small-panel">
+                    <div class="panel-header">
+                        <h3>Top Products</h3>
+                    </div>
+                    <ul class="top-products-list">
+                        <li>
+                            <img src="https://www.apple.com/v/iphone/home/bu/images/chapternav/iphone_16_pro_light__b12gpciooxp2_large.svg" alt="iPhone 16 Pro">
+                            <div class="product-info">
+                                <h4>iPhone 16 Pro</h4>
+                                <p>4,210 sales</p>
+                            </div>
+                            <span class="trend up">􀄨</span>
+                        </li>
+                        <li>
+                            <img src="https://www.apple.com/v/iphone/home/bu/images/chapternav/iphone_16_light__b6e1y4y1r0qu_large.svg" alt="iPhone 16">
+                            <div class="product-info">
+                                <h4>iPhone 16</h4>
+                                <p>3,845 sales</p>
+                            </div>
+                            <span class="trend up">􀄨</span>
+                        </li>
+                        <li>
+                            <img src="https://www.apple.com/v/iphone/home/bu/images/chapternav/airpods_light__e60jmdpxg4oy_large.svg" alt="AirPods">
+                            <div class="product-info">
+                                <h4>AirPods Pro</h4>
+                                <p>2,980 sales</p>
+                            </div>
+                            <span class="trend down">􀄩</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

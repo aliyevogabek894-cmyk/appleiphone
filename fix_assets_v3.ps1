@@ -85,14 +85,19 @@ foreach ($dir in (Get-ChildItem -Directory)) {
     # 2. Fix Assets (root-relative paths that are NOT in navMappings)
     $content = $content -replace 'href="/(?![./])', "href=""$domain/"
     $content = $content -replace 'src="/(?![./])', "src=""$domain/"
+    $content = $content -replace 'srcset="/(?![./])', "srcset=""$domain/"
+    $content = $content -replace 'srcSet="/(?![./])', "srcSet=""$domain/"
     $content = $content -replace 'data-src="/(?![./])', "data-src=""$domain/"
     $content = $content -replace 'data-href="/(?![./])', "data-href=""$domain/"
     $content = $content -replace 'data-srcset="/(?![./])', "data-srcset=""$domain/"
+    $content = $content -replace 'content="/(?![./])', "content=""$domain/"
     $content = $content -replace 'action="/(?![./])', "action=""$domain/"
+    $content = $content -replace ', /', ", $domain/"
     
     # 3. Fixed JSON paths logic (prefixing /_next, /metrics, etc.)
     $content = $content -replace '"assetPrefix":"/', "`"assetPrefix`":`"$domain/"
     $content = $content -replace '":"/(?![./])', "`":`"$domain/"
+    $content = $content -replace '": "/(?![./])', "`": `"$domain/"
     
     # 4. Background images
     $content = $content -replace 'url\(''?/(?![./])', "url('$domain/"

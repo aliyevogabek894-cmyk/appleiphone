@@ -1,6 +1,6 @@
 $domain = "https://www.apple.com"
 $basePath = "c:\Users\007\Desktop\apple"
-$files = Get-ChildItem -Recurse -Filter "index.html" -Exclude "node_modules", ".git"
+# Script will now loop through directories and look for raw or index files
 
 $navMappings = @{
     "/mac/" = "mac/index.html"
@@ -18,21 +18,24 @@ $navMappings = @{
     "/" = "index.html"
 }
 
-foreach ($file in $files) {
-    if ($file.FullName -eq (Join-Path $basePath "index.html")) { 
-        Write-Host "Skipping root index.html"
-        continue 
-    }
-    if ($file.FullName -match "admin") {
-        Write-Host "Skipping admin"
+foreach ($dir in (Get-ChildItem -Directory)) {
+    if ($dir.Name -match "admin|node_modules|\.git") { continue }
+    
+    $rawFile = Get-ChildItem -Path $dir.FullName -Filter "apple_*_raw.html" | Select-Object -First 1
+    $targetFile = Join-Path $dir.FullName "index.html"
+    
+    if ($rawFile) {
+        Write-Host "Recovering $($dir.Name) from $($rawFile.Name)..."
+        $content = Get-Content $rawFile.FullName -Raw
+    } elseif (Test-Path $targetFile) {
+        Write-Host "Processing existing $($targetFile)..."
+        $content = Get-Content $targetFile -Raw
+    } else {
         continue
     }
 
-    Write-Host "Processing $($file.FullName)..."
-    $content = Get-Content $file.FullName -Raw
-    
     # Calculate relative prefix (e.g. "../")
-    $relDir = $file.DirectoryName.Substring($basePath.Length).TrimStart('\')
+    $relDir = $dir.FullName.Substring($basePath.Length).TrimStart('\')
     if ($relDir -eq "") {
         $prefix = ""
     } else {
@@ -94,6 +97,6 @@ foreach ($file in $files) {
     # 4. Background images
     $content = $content -replace 'url\(''?/(?![./])', "url('$domain/"
     
-    Set-Content $file.FullName $content -NoNewline
-    Write-Host "Finished $($file.FullName)"
+    Set-Content $targetFile $content -NoNewline
+    Write-Host "Finished $($targetFile)"
 }

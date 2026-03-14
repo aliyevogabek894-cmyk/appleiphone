@@ -83,21 +83,18 @@ foreach ($dir in (Get-ChildItem -Directory)) {
     }
     
     # 2. Fix Assets (root-relative paths that are NOT in navMappings)
-    $content = $content -replace 'href="/(?![./])', "href=""$domain/"
-    $content = $content -replace 'src="/(?![./])', "src=""$domain/"
-    $content = $content -replace 'srcset="/(?![./])', "srcset=""$domain/"
-    $content = $content -replace 'srcSet="/(?![./])', "srcSet=""$domain/"
-    $content = $content -replace 'data-src="/(?![./])', "data-src=""$domain/"
-    $content = $content -replace 'data-href="/(?![./])', "data-href=""$domain/"
-    $content = $content -replace 'data-srcset="/(?![./])', "data-srcset=""$domain/"
-    $content = $content -replace 'content="/(?![./])', "content=""$domain/"
-    $content = $content -replace 'action="/(?![./])', "action=""$domain/"
+    # Target common attributes with flexible spacing: attr = "/...
+    $attributes = "href|src|srcset|srcSet|data-src|data-href|data-srcset|content|action"
+    $content = [regex]::Replace($content, "(($attributes)\s*=\s*[`"'])/(?![./])", "`$1$domain/")
+    
+    # Handle the second/third URLs in a srcset list: ", /"
     $content = $content -replace ', /', ", $domain/"
     
     # 3. Fixed JSON paths logic (prefixing /_next, /metrics, etc.)
+    # Target "key": "/... or 'key': '/...
+    $content = [regex]::Replace($content, "([`"']\s*:\s*[`"'])/(?![./])", "`$1$domain/")
+    # Specialized fix for assetPrefix to be sure
     $content = $content -replace '"assetPrefix":"/', "`"assetPrefix`":`"$domain/"
-    $content = $content -replace '":"/(?![./])', "`":`"$domain/"
-    $content = $content -replace '": "/(?![./])', "`": `"$domain/"
     
     # 4. Background images
     $content = $content -replace 'url\(''?/(?![./])', "url('$domain/"

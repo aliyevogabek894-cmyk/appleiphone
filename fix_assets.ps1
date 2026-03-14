@@ -1,26 +1,39 @@
-$directories = @(
-    "mac", "ipad", "user", "watch", "vision", "airpods", 
-    "tv-home", "entertainment", "accessories", "support"
-)
+$directories = @("mac", "ipad", "iphone", "watch", "vision", "airpods", "tv-home", "entertainment", "accessories", "support")
+$baseUrl = "https://www.apple.com"
 
 foreach ($dir in $directories) {
-    if (Test-Path "c:\Users\007\Desktop\apple\$dir\index.html") {
-        Write-Host "Fixing assets in $dir\index.html"
-        $filePath = "c:\Users\007\Desktop\apple\$dir\index.html"
-        $content = Get-Content -Path $filePath -Raw -Encoding UTF8
+    $filePath = "C:\Users\007\Desktop\apple\$dir\index.html"
+    if (Test-Path $filePath) {
+        Write-Host "Processing $filePath..."
         
-        # Replace root-relative src, href, srcSet, srcset
-        # Be careful not to replace `//` (protocol relative)
-        $content = [regex]::Replace($content, 'src="/([^/])', 'src="https://www.apple.com/$1')
-        $content = [regex]::Replace($content, 'href="/([^/])', 'href="https://www.apple.com/$1')
-        $content = [regex]::Replace($content, 'srcSet="/([^/])', 'srcSet="https://www.apple.com/$1', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-        $content = [regex]::Replace($content, 'action="/([^/])', 'action="https://www.apple.com/$1')
+        $content = Get-Content -Path $filePath -Encoding UTF8 -Raw
         
-        # Replace background-image styles using url(/...)
-        $content = [regex]::Replace($content, 'url\("/([^/])', 'url("https://www.apple.com/$1')
-        $content = [regex]::Replace($content, 'url\(''/([^/])', 'url(''https://www.apple.com/$1')
+        # 1. Base tag and malformed links
+        $content = $content -replace '<base href="\.\./index\.html">', ''
+        $content = $content -replace 'href="\.\./index\.html"apple"', 'href="../index.html"'
         
+        # 2. Comprehensive asset replacement
+        # Target common Apple asset paths
+        $paths = @("/assets-www/", "/_apps/", "/v/", "/ac/", "/artisan/")
+        
+        foreach ($p in $paths) {
+            # HTML attributes: ="/path/
+            $content = $content -replace "=`"$p", "=`"$baseUrl$p"
+            # JSON properties: :"/path/
+            $content = $content -replace ":`"$p", ":`"$baseUrl$p"
+            # srcSet lists: , /path/
+            $content = $content -replace ", $p", ", $baseUrl$p"
+        }
+        
+        # Catch other root-relative extensions
+        # HTML: ="/file.ext"
+        $content = $content -replace '="/([^/][^"]+\.(js|css|png|jpg|jpeg|svg|json|ico))"', "=`"$baseUrl/`$1`""
+        # JSON: :"/file.ext"
+        $content = $content -replace ':"/([^/][^"]+\.(js|css|png|jpg|jpeg|svg|json|ico))"', ":`"$baseUrl/`$1`""
+
+        # Write back
         Set-Content -Path $filePath -Value $content -Encoding UTF8
     }
 }
-Write-Host "Asset paths fixed."
+
+Write-Host "Done!"

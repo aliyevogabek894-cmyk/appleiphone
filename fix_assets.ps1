@@ -1,39 +1,35 @@
-$directories = @("mac", "ipad", "iphone", "watch", "vision", "airpods", "tv-home", "entertainment", "accessories", "support")
-$baseUrl = "https://www.apple.com"
+$files = Get-ChildItem -Recurse -Filter *.html
 
-foreach ($dir in $directories) {
-    $filePath = "C:\Users\007\Desktop\apple\$dir\index.html"
-    if (Test-Path $filePath) {
-        Write-Host "Processing $filePath..."
-        
-        $content = Get-Content -Path $filePath -Encoding UTF8 -Raw
-        
-        # 1. Base tag and malformed links
-        $content = $content -replace '<base href="\.\./index\.html">', ''
-        $content = $content -replace 'href="\.\./index\.html"apple"', 'href="../index.html"'
-        
-        # 2. Comprehensive asset replacement
-        # Target common Apple asset paths
-        $paths = @("/assets-www/", "/_apps/", "/v/", "/ac/", "/artisan/")
-        
-        foreach ($p in $paths) {
-            # HTML attributes: ="/path/
-            $content = $content -replace "=`"$p", "=`"$baseUrl$p"
-            # JSON properties: :"/path/
-            $content = $content -replace ":`"$p", ":`"$baseUrl$p"
-            # srcSet lists: , /path/
-            $content = $content -replace ", $p", ", $baseUrl$p"
-        }
-        
-        # Catch other root-relative extensions
-        # HTML: ="/file.ext"
-        $content = $content -replace '="/([^/][^"]+\.(js|css|png|jpg|jpeg|svg|json|ico))"', "=`"$baseUrl/`$1`""
-        # JSON: :"/file.ext"
-        $content = $content -replace ':"/([^/][^"]+\.(js|css|png|jpg|jpeg|svg|json|ico))"', ":`"$baseUrl/`$1`""
+foreach ($file in $files) {
+    Write-Host "Processing $($file.FullName)..."
+    $content = Get-Content $file.FullName -Raw
 
-        # Write back
-        Set-Content -Path $filePath -Value $content -Encoding UTF8
-    }
+    # 1. Fix absolute paths starting with /
+    $content = $content -replace '(?<=src=")/(?![/])', 'https://www.apple.com/'
+    $content = $content -replace '(?<=href=")/(?![/])', 'https://www.apple.com/'
+    $content = $content -replace '(?<=action=")/(?![/])', 'https://www.apple.com/'
+    $content = $content -replace '(?<=data-src=")/(?![/])', 'https://www.apple.com/'
+    $content = $content -replace '(?<=data-href=")/(?![/])', 'https://www.apple.com/'
+    
+    # 2. Fix srcSet paths
+    $content = [regex]::Replace($content, 'srcSet="([^"]+)"', {
+        param($m)
+        $val = $m.Groups[1].Value
+        $newVal = $val -replace '(?<=^|,)\s*/', ' https://www.apple.com/'
+        return "srcSet=""$newVal"""
+    })
+
+    # 3. Fix absolute paths in JSON blocks (e.g., ":"/path")
+    $content = $content -replace '(?<=":")/(?![/])', 'https://www.apple.com/'
+    
+    # 4. Fix assetPrefix in Next.js data
+    $content = $content -replace '(?<="assetPrefix":")(?=")', 'https://www.apple.com'
+    
+    # 5. Fix /_next/ paths that might not be prefixed with ":" in JSON or scripts
+    $content = $content -replace '(?<=")/_next/', 'https://www.apple.com/_next/'
+    
+    # 6. Fix style background-image: url(/...)
+    $content = $content -replace '(?<=url\()/(?![/])', 'https://www.apple.com/'
+
+    Set-Content -Path $file.FullName -Value $content -Encoding UTF8
 }
-
-Write-Host "Done!"
